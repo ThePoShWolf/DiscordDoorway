@@ -306,4 +306,13 @@ namespace Discord.Doorway
             }
         }
     }
+
+    public class SecondFunction
+    {
+        [Function("Timer")]
+        public static void Run([TimerTrigger("0 */10 * * * *")] TimerInfo timer)
+        {
+            // Do nothing
+        }
+    }
 }
