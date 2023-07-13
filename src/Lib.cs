@@ -3,6 +3,7 @@ using Microsoft.Azure.Functions.Worker.Http;
 using System;
 using System.Linq;
 using System.Collections.Generic;
+using Azure.Messaging.EventGrid;
 
 namespace Discord.Doorway.Lib
 {
@@ -46,18 +47,8 @@ namespace Discord.Doorway.Lib
     public class MultiOutputBinding
     {
         [EventGridOutput(TopicEndpointUri = "eventgridendpoint", TopicKeySetting = "eventgridaccesskey")]
-        public OutputEvent? Event { get; set; }
+        public EventGridEvent? Event { get; set; }
         public HttpResponseData HttpReponse { get; set; }
-    }
-
-    public class OutputEvent
-    {
-        public string Id { get; set; }
-        public string Topic { get; set; }
-        public string Subject { get; set; }
-        public string EventType { get; set; }
-        public DateTime EventTime { get; set; }
-        public IDictionary<string, object> Data { get; set; }
     }
     public class discordInteraction
     {

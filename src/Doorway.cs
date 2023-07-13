@@ -11,6 +11,7 @@ using Microsoft.Azure.Functions.Worker.Http;
 using Microsoft.Extensions.Logging;
 using System.Text.Json;
 using Discord.Rest;
+using Azure.Messaging.EventGrid;
 
 using Discord.Doorway.Lib;
 using static Discord.Doorway.Lib.helpers;
@@ -180,21 +181,13 @@ namespace Discord.Doorway
             {
                 r.type = 5;
                 httpresponse.WriteString(JsonSerializer.Serialize(r));
+                EventGridEvent oEvent = new EventGridEvent(("discordBot/" + d.application_id + "/command"), "discordInteraction", "1.0", text, default);
+                oEvent.Id = new Guid().ToString();
+                oEvent.EventTime = DateTime.Now;
                 return new MultiOutputBinding()
                 {
                     HttpReponse = httpresponse,
-                    Event = new OutputEvent()
-                    {
-                        Id = new Guid().ToString(),
-                        Topic = "discord",
-                        Subject = "discordBot/" + d.application_id + "/command",
-                        EventType = "discordInteraction",
-                        EventTime = DateTime.Now,
-                        Data = new Dictionary<string, object>()
-                        {
-                            { "interaction", text }
-                        }
-                    }
+                    Event = oEvent
                 };
             }
             _logger.LogInformation("checking for canned for command");
@@ -212,22 +205,39 @@ namespace Discord.Doorway
             {
                 r.type = 5;
                 httpresponse.WriteString(JsonSerializer.Serialize(r));
-                return new MultiOutputBinding()
+                _logger.LogInformation("defferring...");
+                try
                 {
-                    HttpReponse = httpresponse,
-                    Event = new OutputEvent()
+                    /*OutputEvent oEvent = new OutputEvent()
                     {
-                        Id = new Guid().ToString(),
-                        Topic = "discord",
-                        Subject = "discordBot/" + d.application_id + "/command",
-                        EventType = "discordInteraction",
-                        EventTime = DateTime.Now,
-                        Data = new Dictionary<string, object>()
-                        {
-                            { "interaction", text }
-                        }
-                    },
-                };
+                        id = new Guid().ToString(),
+                        topic = "discord",
+                        subject = "discordBot/" + d.application_id + "/command",
+                        eventtype = "discordInteraction",
+                        eventtime = DateTime.Now,
+                        data = new Dictionary<string, string>
+                            {
+                                { "interaction", text }
+                            }
+                    };*/
+                    EventGridEvent oEvent = new EventGridEvent(("discordBot/" + d.application_id + "/command"), "discordInteraction", "1.0", text, default);
+                    oEvent.Id = new Guid().ToString();
+                    oEvent.EventTime = DateTime.Now;
+                    return new MultiOutputBinding()
+                    {
+                        HttpReponse = httpresponse,
+                        Event = oEvent
+                    };
+                }
+                catch (Exception e)
+                {
+                    _logger.LogInformation("Exception: " + e.Message);
+                    return new MultiOutputBinding()
+                    {
+                        HttpReponse = httpresponse,
+                    };
+                }
+
             }
 
             _logger.LogInformation("Found a canned response! " + cannedResponse);
@@ -313,20 +323,12 @@ namespace Discord.Doorway
 
             if (r.type == 5 || passthru)
             {
+                EventGridEvent oEvent = new EventGridEvent(("discordBot/" + d.application_id + "/command"), "discordInteraction", "1.0", text, default);
+                oEvent.Id = new Guid().ToString();
+                oEvent.EventTime = DateTime.Now;
                 return new MultiOutputBinding()
                 {
-                    Event = new OutputEvent()
-                    {
-                        Id = new Guid().ToString(),
-                        Topic = "discord",
-                        Subject = "discordBot/" + d.application_id + "/command",
-                        EventType = "discordInteraction",
-                        EventTime = DateTime.Now,
-                        Data = new Dictionary<string, object>()
-                        {
-                            { "interaction", text }
-                        }
-                    },
+                    Event = oEvent,
                     HttpReponse = httpresponse
                 };
             }
