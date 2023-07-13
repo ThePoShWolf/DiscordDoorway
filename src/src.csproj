@@ -12,6 +12,7 @@
 		<PackageReference Include="Microsoft.Azure.Functions.Worker.Extensions.Http" Version="3.0.13" />
 		<PackageReference Include="Microsoft.Azure.Functions.Worker.Extensions.Storage.Queues" Version="5.0.0" />
 		<PackageReference Include="Microsoft.Azure.Functions.Worker.Sdk" Version="1.7.0" />
+		<PackageReference Include="Microsoft.Azure.Functions.Worker.Extensions.EventGrid" Version="3.2.1" />
 		<PackageReference Include="Microsoft.Azure.Functions.Worker.Extensions.Timer" Version="4.2.0" />
 	</ItemGroup>
 	<ItemGroup>

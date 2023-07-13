@@ -183,7 +183,18 @@ namespace Discord.Doorway
                 return new MultiOutputBinding()
                 {
                     HttpReponse = httpresponse,
-                    QueueBody = text
+                    Event = new OutputEvent()
+                    {
+                        Id = new Guid().ToString(),
+                        Topic = "discord",
+                        Subject = "discordBot/" + d.application_id + "/command",
+                        EventType = "discordInteraction",
+                        EventTime = DateTime.Now,
+                        Data = new Dictionary<string, object>()
+                        {
+                            { "interaction", text }
+                        }
+                    }
                 };
             }
             _logger.LogInformation("checking for canned for command");
@@ -204,7 +215,18 @@ namespace Discord.Doorway
                 return new MultiOutputBinding()
                 {
                     HttpReponse = httpresponse,
-                    QueueBody = text
+                    Event = new OutputEvent()
+                    {
+                        Id = new Guid().ToString(),
+                        Topic = "discord",
+                        Subject = "discordBot/" + d.application_id + "/command",
+                        EventType = "discordInteraction",
+                        EventTime = DateTime.Now,
+                        Data = new Dictionary<string, object>()
+                        {
+                            { "interaction", text }
+                        }
+                    },
                 };
             }
 
@@ -293,7 +315,18 @@ namespace Discord.Doorway
             {
                 return new MultiOutputBinding()
                 {
-                    QueueBody = text,
+                    Event = new OutputEvent()
+                    {
+                        Id = new Guid().ToString(),
+                        Topic = "discord",
+                        Subject = "discordBot/" + d.application_id + "/command",
+                        EventType = "discordInteraction",
+                        EventTime = DateTime.Now,
+                        Data = new Dictionary<string, object>()
+                        {
+                            { "interaction", text }
+                        }
+                    },
                     HttpReponse = httpresponse
                 };
             }

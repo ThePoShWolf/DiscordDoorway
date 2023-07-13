@@ -45,9 +45,19 @@ namespace Discord.Doorway.Lib
 
     public class MultiOutputBinding
     {
-        [QueueOutput("{application_id}", Connection = "AzureWebJobsStorage")]
-        public string? QueueBody { get; set; }
+        [EventGridOutput(TopicEndpointUri = "eventgridendpoint", TopicKeySetting = "eventgridaccesskey")]
+        public OutputEvent? Event { get; set; }
         public HttpResponseData HttpReponse { get; set; }
+    }
+
+    public class OutputEvent
+    {
+        public string Id { get; set; }
+        public string Topic { get; set; }
+        public string Subject { get; set; }
+        public string EventType { get; set; }
+        public DateTime EventTime { get; set; }
+        public IDictionary<string, object> Data { get; set; }
     }
     public class discordInteraction
     {
